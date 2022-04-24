@@ -15,7 +15,7 @@ source .venv/bin/activate
 
 then install the requirements
 ```
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 ```
 
 
@@ -134,7 +134,7 @@ reconstruct_image(fcm_labels_colorcoded, 'fcm')
 ```
 Quantum-modeled K-means (may take up to 8 hours)
 ```
-qkmeans = QKMeans(n_clusters=5, quantum_instance=quantum_instance).fit(mdck_scaled[:5])
+qkmeans = QKMeans(n_clusters=5, quantum_instance=quantum_instance).fit(mdck_scaled)
 qkmeans_centers = qkmeans.cluster_centers_
 qkmeans_labels = qkmeans.labels_
 
@@ -144,7 +144,7 @@ reconstruct_image(qkmeans_labels_colorcoded, 'kmeans')
 ```
 Quantum-modeled fuzzy C-means (may take up to 8 hours)
 ```
-qfcm = QFCMeans(n_clusters=5, quantum_instance=quantum_instance).fit(mdck_scaled[:5])
+qfcm = QFCMeans(n_clusters=5, quantum_instance=quantum_instance).fit(mdck_scaled)
 qfcm_centers = qkmeans.cluster_centers_
 qfcm_labels = qfcm.labels_
 ```

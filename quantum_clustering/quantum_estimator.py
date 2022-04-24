@@ -1,14 +1,14 @@
 import logging
-from typing import Union, Optional, List
+from abc import abstractmethod
+from typing import List, Optional, Union
 
 import numpy as np
-from abc import abstractmethod
 from qiskit import QuantumCircuit
-from qiskit.providers import BaseBackend, Backend
-from qiskit.result import Result
-from sklearn.base import TransformerMixin
-from qiskit.utils import QuantumInstance
 from qiskit.exceptions import QiskitError
+from qiskit.providers import Backend, BaseBackend
+from qiskit.result import Result
+from qiskit.utils import QuantumInstance
+from sklearn.base import TransformerMixin
 
 logger = logging.getLogger(__name__)
 
