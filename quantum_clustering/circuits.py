@@ -1,7 +1,7 @@
 import logging
-import numpy as np
 
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
+import numpy as np
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 logger = logging.getLogger(__name__)
 

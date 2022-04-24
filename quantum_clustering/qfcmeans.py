@@ -1,20 +1,17 @@
 import logging
+from typing import Dict, List, Optional, Union
+
 import numpy as np
-
-from typing import List, Dict, Union, Optional
-
 from qiskit import QuantumCircuit
+from qiskit.providers import Backend, BaseBackend
 from qiskit.result import Result
-from qiskit.providers import BaseBackend, Backend
 from qiskit.tools import parallel_map
 from qiskit.utils import QuantumInstance
-
-from sklearn.exceptions import NotFittedError
 from sklearn.base import ClusterMixin
-
-from .quantum_estimator import QuantumEstimator
+from sklearn.exceptions import NotFittedError
 
 from .circuits import construct_circuit
+from .quantum_estimator import QuantumEstimator
 
 logger = logging.getLogger(__name__)
 
