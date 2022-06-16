@@ -7,11 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 def _map_function(x):
-    r"""
-    We map data feature values to :math:`\theta` and :math:`\phi` values using
-    the following eqaution:
-    .. math:: \phi = (x + 1) \frac{\pi}{2}
-    where :math:`\phi` is the phase and :math:`\theta` the angle
+    """
+    We map data feature values to theta and phi values using
+    the following equation: phi = (x + 1) * (pi / 2)
+    where phi is the phase and theta the angle
+    :param x:  
+    :return: 
     """
     return (x + 1) * np.pi / 2
 
@@ -19,18 +20,13 @@ def _map_function(x):
 def _map_features(input_point,
                   centroids,
                   n_centroids: int):
-    r"""
-    Map the input point and the centroids to :math:`\theta` and :math:`\phi` values
-    via the :func:`_map_function` method.
-    Args:
-        input_point:
-            Input point to map.
-        centroids:
-            Array of points to map.
-        n_centroids:
-            Number of centroids.
-    Returns:
-        Tuple containing input point and centroids mapped.
+    """
+    Map the input point and the centroids to theta and phi values
+    via the _map_function method.
+    :param input_point: Input point to map.
+    :param centroids: Array of points to map.
+    :param n_centroids: Number of centroids.
+    :return: Tuple containing input point and centroids mapped.
     """
     phi_centroids_list = []
     theta_centroids_list = []
@@ -47,10 +43,9 @@ def construct_circuit(input_point: np.ndarray,
                       k: int) -> QuantumCircuit:
     """
     Apply a Hadamard to the ancillary qubit and our mapped data points.
-    Encode data points using U3 gate.
-    Perform controlled swap to entangle the state with the ancillary qubit
-    Apply another Hadamard gate to the ancillary qubit.
-    .. parsed-literal::
+    Encode data points using U3 gate. Perform controlled swap to entangle
+    the state with the ancillary qubit. Apply another Hadamard gate
+    to the ancillary qubit.
                     ┌───┐                   ┌───┐
             |0anc>: ┤ H ├────────────■──────┤ H ├────────M
                     └───┘            |      └───┘
@@ -60,21 +55,15 @@ def construct_circuit(input_point: np.ndarray,
                     ┌───┐   ┌────┐   |
             |0>: ───┤ H ├───┤ U3 ├───X──────────
                     └───┘   └────┘
-    Args:
-        input_point:
-            Input point from which calculate the distance.
-        centroids:
-            Array of points representing the centroids to calculate 
-            the distance to
-        k:
-            Number of centroids
-    Returns:
-        The quantum circuit created
+    :param input_point:  Input point from which calculate the distance.
+    :param centroids: Array of points representing the centroids to calculate the distance to k.
+    :param k: Number of centroids.
+    :return: The quantum circuit created.
     """
     phi_input, theta_input, phi_centroids_list, theta_centroids_list = \
         _map_features(input_point, centroids, k)
 
-    # We need 3 quantum registers, of size k one for a data point (input),
+    # Need 3 quantum registers, of size k one for a data point (input),
     # one for each centroid and one for each ancillary
     qreg_input = QuantumRegister(k, name='qreg_input')
     qreg_centroid = QuantumRegister(k, name='qreg_centroid')

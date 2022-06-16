@@ -18,17 +18,13 @@ logger = logging.getLogger(__name__)
 
 class QFCMeans(ClusterMixin, QuantumEstimator):
     """
-    The Quantum Fuzzy C-Means algorithm for classification
-    Note:
-        The naming conventions follow the KMeans from
-        sklearn.cluster
+    A Quantum Fuzzy C-Means algorithm for classification
     """
 
     def __init__(
         self,
         n_clusters: int = 5,
         quantum_instance: Optional[Union[QuantumInstance, BaseBackend, Backend]] = None,
-        m: int = 2,
         *,
         init: Union[str, np.ndarray] = "random",
         n_init: int = 1,
@@ -37,27 +33,15 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         random_state: int = 42,
     ):
         """
-        Args:
-            n_clusters:
-                The number of clusters to form as well as the number of
-                centroids to generate.
-            quantum_instance:
-                the quantum instance to set. Can be a
-                :class:`~qiskit.utils.QuantumInstance`, a :class:`~qiskit.providers.Backend`
-                or a :class:`~qiskit.providers.BaseBackend`
-            init:
-                Method of initialization of centroids.
-            n_init:
-                Number of time the qfcmeans algorithm will be run with
-                different centroid seeds.
-            max_iter:
-                Maximum number of iterations of the qfcmeans algorithm for a
-                single run.
-            tol:
-                Tolerance with regard to the difference of the cluster centroids
-                of two consecutive iterations to declare convergence.
-            random_state:
-                Determines random number generation for centroid initialization.
+        :param n_clusters: The number of clusters to form as well as the number of centroids to generate.
+        :param quantum_instance: the quantum instance to set. Can be a class qiskit.utils.QuantumInstance,
+        a class qiskit.providers.Backend or a class qiskit.providers.BaseBackend.
+        :param init: Method of initialization of centroids.
+        :param n_init: Number of time the qfcmeans algorithm will be run with different centroid seeds.
+        :param max_iter: Maximum number of iterations of the qfcmeans algorithm for a single run.
+        :param tol: Tolerance with regard to the difference of the cluster centroids of two consecutive
+        iterations to declare convergence.
+        :param random_state: Determines random number generation for membership initialization.
         """
         super().__init__(quantum_instance=quantum_instance)
         self.n_clusters = n_clusters
@@ -77,9 +61,7 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
     def _compute_distances_centroids(self, counts: Dict[str, int]) -> List[int]:
         """
         Compute distance, without explicitly measure it, of a point with respect
-        to all the centroids using a dictionary of counts,
-        which refers to the following circuit:
-        .. parsed-literal::
+        to all the centroids using a dictionary of counts, which refers to the following circuit:
                         ┌───┐                   ┌───┐
                 |0anc>: ┤ H ├────────────■──────┤ H ├────────M
                         └───┘            |      └───┘
@@ -89,11 +71,8 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
                         ┌───┐   ┌────┐   |
                 |0>: ───┤ H ├───┤ U3 ├───X──────────
                         └───┘   └────┘
-        Args:
-            counts:
-                Counts resulting after the simulation.
-        Returns:
-            The computed distance.
+        :param counts: Counts resulting after the simulation.
+        :return: The computed distance.
         """
         distance_centroids = [0] * self.n_clusters
         x = 1
@@ -106,10 +85,8 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
     def _get_distances_centroids(self, results: Result) -> np.ndarray:
         """
         Retrieves distances from counts via :func:`_compute_distances_centroids`
-        Args:
-            results: :class:`~qiskit.Result` object of execution results
-        Returns:
-            np.ndarray of distances
+        :param results: class qiskit.Result object of execution results
+        :return: np.ndarray of distances
         """
         counts = results.get_counts()
         # compute distance from centroids using counts
@@ -122,11 +99,9 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         """
         Creates the circuits to be executed on
         the gated quantum computer for the classification
-        process
-        Args:
-            X_test: The unclassified input data.
-        Returns:
-            List of quantum circuits created for the computation
+        process.
+        :param X_test: The unclassified input data.
+        :return: List of quantum circuits created for the computation.
         """
         logger.info("Starting circuits construction ...")
         """
@@ -144,17 +119,15 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         return circuits
 
     def _next_centers(X: np.ndarray, u: np.ndarray):
-        """Update cluster centers"""
+        """Update cluster centers."""
         um = u**2
         return (X.T @ um / np.sum(um, axis=0)).T
     
     def soft_predict(self, X: np.ndarray) -> np.ndarray:
-        """Soft predict of QFCMeans
-        Args:
-            X (np.ndarray): New data to predict.
-        Returns:
-            np.ndarray: Fuzzy partition array, returned as an array with
-            n_samples rows and n_clusters columns.
+        """
+        Soft predict of QFCMeans.
+        :param X (np.ndarray): New data to predict.
+        :return: Fuzzy partition array (np.ndarray) , returned as an array with n_samples rows and n_clusters columns.
         """
         circuits = self._construct_circuits(X)
         results = self.execute(circuits)
@@ -171,12 +144,10 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
 
     def fit(self, X: np.ndarray):
         """
-        Fits the model using X as training dataset
-        The fit model creates clusters from the training dataset given as input
-        Args:
-            X: training dataset
-        Returns:
-            trained QFCMeans object
+        Fits the model using X as training dataset. The fit model creates clusters
+        from the training dataset given as input.
+        :param X: training dataset
+        :return: trained QFCMeans object
         """
         self.X_train = np.asarray(X)
         # initialize membership values U
@@ -189,7 +160,6 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         self.n_iter_ = 0
         error = np.inf
 
-        
         while error > self.tol and self.n_iter_ < self.max_iter:
             u_old = self.u.copy()
             self.cluster_centers_ = QFCMeans._next_centers(self.X_train, self.u)
@@ -202,12 +172,10 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         return self
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
-        """Predict the labels of the provided data.
-        Args:
-            X_test:
-                New data to predict.
-        Returns:
-            Index of the cluster each sample belongs to.
+        """
+        Predict the labels of the provided data.
+        :param X_test: New data to predict.
+        :return: Index of the cluster each sample belongs to.
         """
         if self.labels_ is None:
             raise NotFittedError(

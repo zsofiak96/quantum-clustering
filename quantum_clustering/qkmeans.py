@@ -21,9 +21,6 @@ logger = logging.getLogger(__name__)
 class QKMeans(ClusterMixin, QuantumEstimator):
     """
     The Quantum K-Means algorithm for classification
-    Note:
-        The naming conventions follow the KMeans from
-        sklearn.cluster
     """
 
     def __init__(
@@ -36,22 +33,13 @@ class QKMeans(ClusterMixin, QuantumEstimator):
         random_state: int = 42,
     ):
         """
-        Args:
-            n_clusters:
-                The number of clusters to form as well as the number of
-                centroids to generate.
-            quantum_instance:
-                the quantum instance to set. Can be a
-                :class:`~qiskit.utils.QuantumInstance`, a :class:`~qiskit.providers.Backend`
-                or a :class:`~qiskit.providers.BaseBackend`
-            max_iter:
-                Maximum number of iterations of the qkmeans algorithm for a
-                single run.
-            tol:
-                Tolerance with regard to the difference of the cluster centroids
-                of two consecutive iterations to declare convergence.
-            random_state:
-                Determines random number generation for centroid initialization.
+        :param n_clusters: The number of clusters to form as well as the number of centroids to generate.
+        :param quantum_instance: the quantum instance to set. Can be a class qiskit.utils.QuantumInstance,
+        a class qiskit.providers.Backend or a class qiskit.providers.BaseBackend
+        :param max_iter: Maximum number of iterations of the qkmeans algorithm for a single run.
+        :param tol: Tolerance with regard to the difference of the cluster centroids of two consecutive
+        iterations to declare convergence.
+        :param random_state: Determines random number generation for centroid initialization.
         """
         super().__init__(quantum_instance=quantum_instance)
         self.n_clusters = n_clusters
@@ -67,15 +55,10 @@ class QKMeans(ClusterMixin, QuantumEstimator):
         self, X: np.ndarray, n_clusters: int, random_state: int = 42) -> np.ndarray:
         """
         Create random cluster centroids.
-        Args:
-            X:
-                The dataset to be used for centroid initialization.
-            n_clusters:
-                The desired number of clusters for which centroids are required.
-            random_state:
-                Determines random number generation for centroid initialization.
-        Returns:
-            Collection of k centroids as a numpy ndarray.
+        :param X: The dataset to be used for centroid initialization.
+        :param n_clusters: The desired number of clusters for which centroids are required.
+        :param random_state: Determines random number generation for centroid initialization.
+        :return: Collection of k centroids as a numpy ndarray.
         """
         np.random.seed(random_state)
         centroids = []
@@ -101,10 +84,8 @@ class QKMeans(ClusterMixin, QuantumEstimator):
 
     def _compute_distances_centroids(self, counts: Dict[str, int]) -> List[int]:
         """
-        Compute distance, without explicitly measure it, of a point with respect
-        to all the centroids using a dictionary of counts,
-        which refers to the following circuit:
-        .. parsed-literal::
+        Compute distance, without explicitly measure it, of a point with respect to all
+        the centroids using a dictionary of counts, which refers to the following circuit:
                         ┌───┐                   ┌───┐
                 |0anc>: ┤ H ├────────────■──────┤ H ├────────M
                         └───┘            |      └───┘
@@ -114,11 +95,8 @@ class QKMeans(ClusterMixin, QuantumEstimator):
                         ┌───┐   ┌────┐   |
                 |0>: ───┤ H ├───┤ U3 ├───X──────────
                         └───┘   └────┘
-        Args:
-            counts:
-                Counts resulting after the simulation.
-        Returns:
-            The computed distance.
+        :param counts: Counts resulting after the simulation.
+        :return: The computed distance.
         """
         distance_centroids = [0] * self.n_clusters
         x = 1
@@ -131,10 +109,8 @@ class QKMeans(ClusterMixin, QuantumEstimator):
     def _get_distances_centroids(self, results: Result) -> np.ndarray:
         """
         Retrieves distances from counts via :func:`_compute_distances_centroids`
-        Args:
-            results: :class:`~qiskit.Result` object of execution results
-        Returns:
-            np.ndarray of distances
+        :param results: class qiskit.Result object of execution results
+        :return: np.ndarray of distances
         """
         counts = results.get_counts()
         # compute distance from centroids using counts
@@ -147,11 +123,9 @@ class QKMeans(ClusterMixin, QuantumEstimator):
         """
         Creates the circuits to be executed on
         the gated quantum computer for the classification
-        process
-        Args:
-            X_test: The unclassified input data.
-        Returns:
-            List of quantum circuits created for the computation
+        process.
+        :param X_test: The unclassified input data.
+        :return: List of quantum circuits created for the computation.
         """
         logger.info("Starting circuits construction ...")
         """
@@ -168,17 +142,13 @@ class QKMeans(ClusterMixin, QuantumEstimator):
         logger.info("Done.")
         return circuits
 
-    def fit(self, X: np.ndarray, y: np.ndarray = None):
+    def fit(self, X: np.ndarray):
         """
-        Fits the model using X as training dataset
-        and y as training labels. For the qkmeans algorithm y is ignored.
-        The fit model creates clusters from the training dataset given as input
-        Args:
-            X: training dataset
-            y: Ignored.
-               Kept here for API consistency
-        Returns:
-            trained QKMeans object
+        Fits the model using X as training dataset and y as training labels.
+        For the qkmeans algorithm y is ignored. The fit model creates clusters
+        from the training dataset given as input
+        :param X: training dataset.
+        :return: trained QKMeans object.
         """
         self.X_train = np.asarray(X)
         self._init_centroid(self.X_train, self.n_clusters, self.random_state)
@@ -215,12 +185,10 @@ class QKMeans(ClusterMixin, QuantumEstimator):
         return self
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
-        """Predict the labels of the provided data.
-        Args:
-            X_test:
-                New data to predict.
-        Returns:
-            Index of the cluster each sample belongs to.
+        """
+        Predict the labels of the provided data.
+        :param X_test: New data to predict.
+        :return: Index of the cluster each sample belongs to.
         """
         if self.labels_ is None:
             raise NotFittedError(
