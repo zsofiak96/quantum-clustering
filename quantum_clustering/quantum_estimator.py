@@ -15,21 +15,15 @@ logger = logging.getLogger(__name__)
 class QuantumEstimator(TransformerMixin):
     def __init__(
         self,
-        encoding_map=None,
         quantum_instance: Optional[Union[QuantumInstance, BaseBackend, Backend]] = None,
     ):
         """
-        :param encoding_map: Map to classical data to quantum states.
-        This class does not impose any constraint on it. It can either
-        be a custom encoding map or a qiskit FeatureMap
         :param quantum_instance: The quantum instance to set. Can be a
         class qiskit.utils.QuantumInstance, a class qiskit.providers.Backend
         or a class qiskit.providers.BaseBackend
         """
         self.X_train = np.asarray([])
         self.y_train = np.asarray([])
-        self._encoding_map = encoding_map
-
         self._set_quantum_instance(quantum_instance)
 
     @property
