@@ -6,9 +6,9 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 logger = logging.getLogger(__name__)
 
 
-def _map_function(x):
+def _map_function(x: int) -> int:
     """
-    We map data feature values to theta and phi values using
+    Map data feature values to theta and phi values using
     the following equation: phi = (x + 1) * (pi / 2)
     where phi is the phase and theta the angle
     :param x:  
@@ -17,9 +17,11 @@ def _map_function(x):
     return (x + 1) * np.pi / 2
 
 
-def _map_features(input_point,
-                  centroids,
-                  n_centroids: int):
+def _map_features(
+    input_point: np.ndarray,
+    centroids: np.ndarray,
+    n_centroids: int
+) -> tuple:
     """
     Map the input point and the centroids to theta and phi values
     via the _map_function method.
@@ -38,9 +40,11 @@ def _map_features(input_point,
     return phi_input, theta_input, phi_centroids_list, theta_centroids_list
 
 
-def construct_circuit(input_point: np.ndarray,
-                      centroids: np.ndarray,
-                      k: int) -> QuantumCircuit:
+def construct_circuit(
+    input_point: np.ndarray,
+    centroids: np.ndarray,
+    k: int
+) -> QuantumCircuit:
     """
     Apply a Hadamard to the ancillary qubit and our mapped data points.
     Encode data points using U3 gate. Perform controlled swap to entangle
