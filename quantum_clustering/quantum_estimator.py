@@ -58,16 +58,6 @@ class QuantumEstimator(TransformerMixin):
 
         self._quantum_instance = quantum_instance
 
-    @property
-    def encoding_map(self):
-        """Returns the Encoding Map"""
-        return self._encoding_map
-
-    @encoding_map.setter
-    def encoding_map(self, encoding_map):
-        """Encoding Map setter"""
-        self._encoding_map = encoding_map
-
     def execute(
         self, qcircuits: Union[QuantumCircuit, List[QuantumCircuit]]
     ) -> Union[Optional[Result], None]:
