@@ -46,7 +46,7 @@ def construct_circuit(
     k: int
 ) -> QuantumCircuit:
     """
-    Apply a Hadamard to the ancillary qubit and our mapped data points.
+    Apply a Hadamard to the ancillary qubit and the mapped data points.
     Encode data points using U3 gate. Perform controlled swap to entangle
     the state with the ancillary qubit. Apply another Hadamard gate
     to the ancillary qubit.
@@ -59,7 +59,7 @@ def construct_circuit(
                     ┌───┐   ┌────┐   |
             |0>: ───┤ H ├───┤ U3 ├───X──────────
                     └───┘   └────┘
-    :param input_point:  Input point from which calculate the distance.
+    :param input_point: Input point from which calculate the distance.
     :param centroids: Array of points representing the centroids to calculate the distance to k.
     :param k: Number of centroids.
     :return: The quantum circuit created.
@@ -77,7 +77,7 @@ def construct_circuit(
     # of the measurements
     creg = ClassicalRegister(k, 'creg')
 
-    # Create the quantum circuit containing our registers
+    # Create the quantum circuit containing the registers
     qc = QuantumCircuit(qreg_input, qreg_centroid, qreg_psi, creg, name='qc')
 
     for i in range(0, k):
