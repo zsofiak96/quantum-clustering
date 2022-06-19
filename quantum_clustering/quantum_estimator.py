@@ -33,24 +33,6 @@ class QuantumEstimator(TransformerMixin):
 
         self._set_quantum_instance(quantum_instance)
 
-    @abstractmethod
-    def fit(self, X_train: np.ndarray, y_train: np.ndarray):
-        """
-        Fits the model using X as training dataset and y as training labels
-        :param X_train: training dataset
-        :param y_train: training labels
-        """
-        raise NotImplementedError("Must have implemented this.")
-
-    @abstractmethod
-    def predict(self, X_test: np.ndarray) -> np.ndarray:
-        """
-        Predicts the labels associated to the unclassified data X_test
-        :param X_test: he unclassified data.
-        :return: the labels associated to X_test.
-        """
-        raise NotImplementedError("Must have implemented this.")
-
     @property
     def quantum_instance(self) -> QuantumInstance:
         """Returns the quantum instance to evaluate the circuit."""
