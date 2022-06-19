@@ -26,8 +26,6 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         n_clusters: int = 5,
         quantum_instance: Optional[Union[QuantumInstance, BaseBackend, Backend]] = None,
         *,
-        init: Union[str, np.ndarray] = "random",
-        n_init: int = 1,
         max_iter: int = 30,
         tol: float = 1e-4,
         random_state: int = 42,
@@ -36,8 +34,6 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         :param n_clusters: The number of clusters to form as well as the number of centroids to generate.
         :param quantum_instance: the quantum instance to set. Can be a class qiskit.utils.QuantumInstance,
         a class qiskit.providers.Backend or a class qiskit.providers.BaseBackend.
-        :param init: Method of initialization of centroids.
-        :param n_init: Number of time the qfcmeans algorithm will be run with different centroid seeds.
         :param max_iter: Maximum number of iterations of the qfcmeans algorithm for a single run.
         :param tol: Tolerance with regard to the difference of the cluster centroids of two consecutive
         iterations to declare convergence.
@@ -45,11 +41,9 @@ class QFCMeans(ClusterMixin, QuantumEstimator):
         """
         super().__init__(quantum_instance=quantum_instance)
         self.n_clusters = n_clusters
-        self.init = init
         self.max_iter = max_iter
         self.n_iter_ = 0
         self.tol = tol
-        self.n_init = n_init
         self.n_clusters = n_clusters
         self.random_state = random_state
         self.cluster_centers_ = None
