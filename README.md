@@ -147,6 +147,21 @@ Quantum-modeled fuzzy C-means (may take up to 8 hours)
 qfcm = QFCMeans(n_clusters=5, quantum_instance=quantum_instance).fit(mdck_scaled)
 qfcm_centers = qkmeans.cluster_centers_
 qfcm_labels = qfcm.labels_
+qfcm_labels_memberships = qfcm.u
+qfcm_labels_membership = [
+    qfcm_labels_memberships[i][qfcm_labels[i]] for i in range(len(qfcm_labels))
+    ]
+
+qfcm_labels_membership = np.array(qfcm_labels_membership)
+qfcm_labels_membership = qfcm_labels_membership.reshape(-1, 100)
+membership_scaler = MinMaxScaler()
+qfcm_labels_membership = membership_scaler.fit_transform(
+    qfcm_labels_membership
+    )
+
+qfcm_labels_colorcoded = transform_labels_to_colorcode(
+    qfcm_labels, 4, random_color_map, membership_scores=qfcm_labels_membership)
+reconstruct_image(qfcm_labels_colorcoded, 'fcm')
 ```
 
 ## Acknowledgments
