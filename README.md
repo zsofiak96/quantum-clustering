@@ -58,7 +58,7 @@ mdck = pd.read_csv(
     header = None, sep='\t', index_col=0).transpose()
 
 # PCA then scale data for ML
-pca = PCA(70)
+pca = PCA(2)
 pca.fit(mdck)
 mdck_pca = pca.transform(mdck)
 
